@@ -46,6 +46,36 @@ function esItemNuevo(titulo = '') {
   return PALABRAS_NUEVO.some(p => t.includes(p))
 }
 
+const MARCAS = [
+  'Toyota','Hyundai','Chevrolet','Ford','Nissan','Suzuki','Kia','Mazda',
+  'Honda','Volkswagen','Renault','Fiat','Peugeot','Citroën','Mercedes',
+  'BMW','Subaru','Mitsubishi','Jeep','Chery','BYD','Haval','JAC','Volvo',
+  'Audi','Opel','Isuzu','Dacia','Skoda','Seat','Dodge',
+]
+
+const CATEGORIAS_KW = [
+  { id:'motor',         kw:['motor','culata','bloque','piston','ciguenal','leva','biela','tapa motor'] },
+  { id:'frenos',        kw:['freno','pastilla','disco freno','mordaza','pinza','bomba freno'] },
+  { id:'suspension',    kw:['suspension','amortiguador','resorte','rotula','barra','muñon','brazo'] },
+  { id:'electrico',     kw:['alternador','arranque','bateria','sensor','bujia','modulo','bobina','faro'] },
+  { id:'transmision',   kw:['transmision','caja cambio','embrague','diferencial','junta','palier','cardan'] },
+  { id:'refrigeracion', kw:['radiador','bomba agua','termostato','manguera','intercooler','ventilador'] },
+  { id:'combustible',   kw:['bomba combustible','inyector','carburador','filtro combustible','bencina','bomba bencina'] },
+  { id:'carroceria',    kw:['puerta','capot','guardabarro','paragolpe','techo','espejo','vidrio','parabrisas'] },
+  { id:'escape',        kw:['escape','catalizador','silenciador','tubo escape','colector'] },
+  { id:'correas',       kw:['correa distribucion','correa accesorios','filtro aceite','filtro aire','filtro'] },
+]
+
+function detectarMarca(titulo = '') {
+  const t = titulo.toLowerCase()
+  return MARCAS.find(m => t.includes(m.toLowerCase())) ?? null
+}
+
+function detectarCategoria(titulo = '') {
+  const t = titulo.toLowerCase()
+  return CATEGORIAS_KW.find(c => c.kw.some(kw => t.includes(kw)))?.id ?? null
+}
+
 async function rasparBusqueda(page, busqueda) {
   // CONDITION_2230581 = filtro "Usado" en MercadoLibre Chile
   const url = `https://listado.mercadolibre.cl/${encodeURIComponent(busqueda)}_Desde_1_ITEM*CONDITION_2230581_NoIndex_True`;
@@ -147,8 +177,8 @@ async function ejecutar() {
             imagen: item.imagen,
             descripcion: item.titulo,
             url_original: item.url_original,
-            categoria: "Repuestos",
-            marca: null,
+            categoria: detectarCategoria(item.titulo),
+            marca: detectarMarca(item.titulo),
             modelo: null,
             vendedor_nombre: item.vendedor,
             ubicacion: item.ubicacion || "Chile",
