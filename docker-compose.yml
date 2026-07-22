@@ -1,0 +1,11 @@
+services:
+  agentes:
+    build: .
+    restart: unless-stopped
+    command: node agentes/scheduler.js
+    env_file:
+      - .env
+    volumes:
+      # Sesión de Facebook — debe existir en el host antes del primer docker compose up
+      # Cópiala con: scp agentes/fb-session.json usuario@VPS_IP:~/componenta/agentes/
+      - ./agentes/fb-session.json:/app/agentes/fb-session.json

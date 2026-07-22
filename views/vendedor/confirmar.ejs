@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/cabeza', { titulo: 'Revisar ficha — Componenta' }) %>
+<body>
+  <%- include('../partials/header-vendedor') %>
+
+  <div class="contenedor">
+    <% if (ficha.esPieza === false) { %>
+      <div class="alerta">
+        La IA no pudo identificar un repuesto en esta foto. Motivo: <%= ficha.motivo || 'imagen poco clara' %>.
+        Intenta con otra foto, con mejor luz y la pieza centrada.
+      </div>
+      <a href="/vendedor/panel" class="btn btn-secundario">Volver a intentar</a>
+    <% } else { %>
+      <h1 class="display" style="font-size:1.7rem;">Revisa antes de publicar</h1>
+      <p style="color:var(--cemento); margin-top:4px;">
+        Esto es lo que la IA detectó. Corrige cualquier dato si hace falta — tú tienes la última palabra.
+      </p>
+
+      <div class="detalle-pieza" style="margin-top:10px;">
+        <div class="foto-grande">
+          <img src="<%= rutaImagen %>" alt="Foto de la pieza" />
+        </div>
+
+        <form method="POST" action="/vendedor/panel/publicar">
+          <input type="hidden" name="rutaImagen" value="<%= rutaImagen %>" />
+
+          <div class="campo">
+            <label for="nombre">Nombre de la pieza</label>
+            <input type="text" id="nombre" name="nombre" value="<%= ficha.nombre %>" required />
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoría</label>
+            <input type="text" id="categoria" name="categoria" value="<%= ficha.categoria %>" />
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="campo">
+              <label for="marcaVehiculoProbable">Marca del vehículo</label>
+              <input type="text" id="marcaVehiculoProbable" name="marcaVehiculoProbable"
+                value="<%= ficha.marcaVehiculoProbable || '' %>" />
+            </div>
+            <div class="campo">
+              <label for="modeloVehiculoProbable">Modelo / años</label>
+              <input type="text" id="modeloVehiculoProbable" name="modeloVehiculoProbable"
+                value="<%= ficha.modeloVehiculoProbable || '' %>" />
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="estadoVisual">Estado</label>
+            <input type="text" id="estadoVisual" name="estadoVisual" value="<%= ficha.estadoVisual %>" />
+          </div>
+
+          <div class="campo">
+            <label for="descripcion">Descripción de venta</label>
+            <textarea id="descripcion" name="descripcion"><%= ficha.descripcion %></textarea>
+          </div>
+
+          <div class="campo">
+            <label for="precio">
+              Precio final (CLP) — la IA sugiere entre
+              $<%= Number(ficha.precioSugeridoMinCLP).toLocaleString('es-CL') %>
+              y $<%= Number(ficha.precioSugeridoMaxCLP).toLocaleString('es-CL') %>
+            </label>
+            <input type="number" id="precio" name="precio" value="<%= ficha.precioSugeridoMinCLP %>" required />
+          </div>
+
+          <div style="display:flex; gap:12px; margin-top:8px;">
+            <button type="submit" class="btn btn-verde">Publicar en componenta.cl</button>
+            <a href="/vendedor/panel" class="btn btn-secundario">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('../partials/pie') %>
+</body>
+</html>

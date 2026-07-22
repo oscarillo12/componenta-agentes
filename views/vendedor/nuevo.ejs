@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/cabeza', { titulo: 'Publicar pieza — Componenta' }) %>
+<body style="background:#f5f5f4; min-height:100vh; font-family:'Inter',system-ui,sans-serif; color:#16181d;">
+
+<!-- Header -->
+<header style="background:#fff; border-bottom:1px solid #ececea; position:sticky; top:0; z-index:40; padding:0 24px; height:56px; display:flex; align-items:center; justify-content:space-between;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div style="width:30px; height:30px; background:#16181d; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:14px;">C</div>
+    <span style="font-size:14px; font-weight:800; color:#16181d;">Componenta</span>
+    <span style="font-size:11px; font-weight:600; color:#9aa0aa; background:#f5f5f4; padding:3px 9px; border-radius:20px;">Nueva pieza</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <a href="/vendedor/panel" style="font-size:12px; color:#9aa0aa; text-decoration:none;">← Mi inventario</a>
+    <span style="font-size:13px; color:#374151; font-weight:500;"><%= vendedor.nombre %></span>
+  </div>
+</header>
+
+<!-- Steps indicator -->
+<div id="stepIndicator" style="background:#fff; border-bottom:1px solid #ececea; padding:0 24px;">
+  <div style="max-width:780px; margin:0 auto; display:flex; gap:0; padding:14px 0;">
+    <% [
+      { n:0, label:'Vehículo', icon:'🚗' },
+      { n:1, label:'Fotografía', icon:'📷' },
+      { n:2, label:'Identificación IA', icon:'🧠' },
+      { n:3, label:'Publicación', icon:'🚀' }
+    ].forEach(function(s, i) { %>
+      <div style="display:flex; align-items:center; flex:<%= i < 3 ? 1 : 'none' %>; min-width:0;">
+        <div class="step-pill" data-step="<%= s.n %>" style="display:flex; align-items:center; gap:7px; padding:7px 10px; border-radius:10px; background:#f5f5f4; border:1.5px solid #ececea; flex-shrink:0;">
+          <div class="step-dot" data-step="<%= s.n %>" style="width:26px; height:26px; border-radius:7px; background:#d1d5db; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0;"><%= s.icon %></div>
+          <span class="step-label" data-step="<%= s.n %>" style="font-size:11px; font-weight:700; color:#9aa0aa; white-space:nowrap;"><%= s.label %></span>
+        </div>
+        <% if (i < 3) { %>
+          <div class="step-line" data-after="<%= s.n %>" style="flex:1; height:2px; background:#ececea; margin:0 4px; min-width:6px;"></div>
+        <% } %>
+      </div>
+    <% }); %>
+  </div>
+</div>
+
+<main style="max-width:780px; margin:0 auto; padding:24px 16px 80px;">
+
+  <!-- ══ STEP 0: VEHÍCULO ══ -->
+  <div id="step0" class="step-content">
+    <div style="background:#16181d; border-radius:18px; padding:30px 32px; margin-bottom:20px; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:-60px; right:-40px; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle, rgba(47,95,219,.25) 0%, transparent 70%); pointer-events:none;"></div>
+      <div style="position:relative; z-index:1;">
+        <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(47,95,219,.15); border:1px solid rgba(47,95,219,.35); border-radius:20px; padding:4px 12px; margin-bottom:14px;">
+          <span style="font-size:12px; font-weight:600; color:#8fb0f2;">✨ Potenciado por IA</span>
+        </div>
+        <h1 style="font-size:26px; font-weight:800; color:#fff; margin:0 0 10px; line-height:1.3;">Publica tu repuesto en 30 segundos</h1>
+        <p style="font-size:14px; color:rgba(255,255,255,.55); margin:0;">Saca una foto, la IA identifica la pieza y la publica automáticamente.</p>
+      </div>
+    </div>
+
+    <div style="background:#fff; border-radius:18px; border:1px solid #ececea; overflow:hidden;">
+      <div style="height:3px; background:#2f5fdb;"></div>
+      <div style="padding:28px 32px;">
+        <h2 style="font-size:16px; font-weight:800; color:#16181d; margin:0 0 6px;">¿De qué vehículo es la pieza?</h2>
+        <p style="font-size:13px; color:#9aa0aa; margin:0 0 22px;">Opcional, pero mejora mucho la precisión de la IA</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:20px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px;">Marca</label>
+            <input id="v_marca" type="text" placeholder="Toyota, Chevrolet…" list="marcasList"
+              style="width:100%; padding:11px 12px; border:1.5px solid #ececea; border-radius:10px; font-size:14px; outline:none; box-sizing:border-box; transition:border .2s;"
+              onfocus="this.style.borderColor='#2f5fdb'" onblur="this.style.borderColor='#ececea'">
+            <datalist id="marcasList">
+              <% ["Toyota","Chevrolet","Hyundai","Kia","Nissan","Suzuki","Ford","Volkswagen","Renault","Peugeot","Citroën","Honda","Mazda","Mitsubishi","Subaru","BMW","Mercedes-Benz","Audi"].forEach(function(m){ %>
+                <option value="<%= m %>">
+              <% }); %>
+            </datalist>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px;">Modelo</label>
+            <input id="v_modelo" type="text" placeholder="Yaris, Spark…"
+              style="width:100%; padding:11px 12px; border:1.5px solid #ececea; border-radius:10px; font-size:14px; outline:none; box-sizing:border-box; transition:border .2s;"
+              onfocus="this.style.borderColor='#2f5fdb'" onblur="this.style.borderColor='#ececea'">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px;">Año</label>
+            <input id="v_anio" type="number" placeholder="2015" min="1980" max="2026"
+              style="width:100%; padding:11px 12px; border:1.5px solid #ececea; border-radius:10px; font-size:14px; outline:none; box-sizing:border-box; transition:border .2s;"
+              onfocus="this.style.borderColor='#2f5fdb'" onblur="this.style.borderColor='#ececea'">
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:space-between;">
+          <button onclick="irAPaso1Skip()" style="padding:11px 20px; border:1.5px solid #ececea; border-radius:10px; background:#fff; color:#6b7280; font-size:13px; font-weight:600; cursor:pointer;">
+            Saltar este paso →
+          </button>
+          <button onclick="irAPaso1()" style="padding:11px 24px; background:#16181d; color:#fff; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px;">
+            Continuar → Subir foto
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 1: FOTO ══ -->
+  <div id="step1" class="step-content" style="display:none;">
+    <div style="background:#fff; border-radius:18px; border:1px solid #ececea; overflow:hidden;">
+      <div style="height:3px; background:#2f5fdb;"></div>
+      <div style="padding:28px 32px;">
+        <h2 style="font-size:16px; font-weight:800; color:#16181d; margin:0 0 6px;">Fotografía de la pieza</h2>
+        <p style="font-size:13px; color:#9aa0aa; margin:0 0 22px;">La IA analiza la imagen para identificar la pieza automáticamente</p>
+
+        <div id="zonaFoto" onclick="document.getElementById('inputFoto').click()"
+          style="border:2px dashed #d1d5db; border-radius:14px; padding:48px 24px; text-align:center; cursor:pointer; transition:all .2s; background:#fafafa;"
+          onmouseenter="this.style.borderColor='#2f5fdb'; this.style.background='#f0f4ff'"
+          onmouseleave="this.style.borderColor='#d1d5db'; this.style.background='#fafafa'">
+          <div id="zonaFotoContenido">
+            <div style="font-size:48px; margin-bottom:12px;">📷</div>
+            <p style="font-size:15px; font-weight:700; color:#16181d; margin:0 0 4px;">Toca para tomar o elegir foto</p>
+            <p style="font-size:12px; color:#9aa0aa; margin:0;">JPG o PNG · hasta 8MB</p>
+          </div>
+          <img id="previewFoto" style="display:none; max-height:280px; border-radius:10px; max-width:100%; margin:0 auto;" alt="preview">
+        </div>
+        <input id="inputFoto" type="file" accept="image/*" capture="environment" style="display:none" onchange="onFotoSeleccionada(this)">
+
+        <div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+          <% [
+            { e:'💡', t:'Foto con buena luz' },
+            { e:'📐', t:'Incluye número de parte si es visible' },
+            { e:'🔍', t:'La IA detecta marca y compatibilidad sola' }
+          ].forEach(function(tip){ %>
+            <div style="background:#f9fafb; border:1px solid #ececea; border-radius:10px; padding:10px 12px; display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;"><%= tip.e %></span>
+              <p style="font-size:11px; color:#6b7280; margin:0; line-height:1.4;"><%= tip.t %></p>
+            </div>
+          <% }); %>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:space-between; margin-top:20px;">
+          <button onclick="mostrarPaso(0)" style="padding:11px 20px; border:1.5px solid #ececea; border-radius:10px; background:#fff; color:#6b7280; font-size:13px; font-weight:600; cursor:pointer;">← Volver</button>
+          <button id="btnAnalizar" onclick="analizarFoto()" disabled
+            style="padding:11px 28px; background:#d1d5db; color:#9ca3af; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:not-allowed; display:flex; align-items:center; gap:8px;">
+            Analizar con IA →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2: RESULTADO IA ══ -->
+  <div id="step2" class="step-content" style="display:none;">
+    <div style="background:#fff; border-radius:18px; border:1px solid #ececea; overflow:hidden;">
+      <div style="height:3px; background:#2f5fdb;"></div>
+      <div style="padding:28px 32px;">
+        <h2 style="font-size:16px; font-weight:800; color:#16181d; margin:0 0 6px;">Identificación con IA</h2>
+        <p style="font-size:13px; color:#9aa0aa; margin:0 0 20px;">Componenta identificó la pieza automáticamente. Revisa y edita si es necesario.</p>
+
+        <div id="iaLoading" style="display:flex; flex-direction:column; align-items:center; padding:48px 0; gap:14px;">
+          <div style="width:36px; height:36px; border:3px solid #ececea; border-top-color:#2f5fdb; border-radius:50%; animation:spin .8s linear infinite;"></div>
+          <p id="iaLoadingText" style="font-size:13px; color:#9aa0aa; margin:0;">Analizando imagen con IA…</p>
+        </div>
+
+        <div id="iaResultado" style="display:none;">
+          <!-- Badge confianza -->
+          <div id="badgeConfianza" style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:10px; border:1.5px solid #d7e3f7; background:#eef3fc; margin-bottom:20px; font-size:13px; font-weight:600; color:#1e3a8a;">
+            <span>✓ Pieza identificada</span>
+            <span id="txtConfianza"></span>
+          </div>
+
+          <div style="display:flex; gap:18px; margin-bottom:20px;">
+            <img id="imgPreviewStep2" style="width:100px; height:100px; object-fit:cover; border-radius:12px; border:1.5px solid #ececea; flex-shrink:0;" alt="">
+            <div style="flex:1; display:flex; flex-direction:column; gap:12px;">
+              <div>
+                <label style="font-size:11px; color:#9aa0aa; font-weight:600; text-transform:uppercase; letter-spacing:.4px; display:flex; align-items:center; gap:4px; margin-bottom:5px;">
+                  Pieza identificada <span style="font-size:9px; background:#eef3fc; color:#2f5fdb; padding:1px 5px; border-radius:4px; font-weight:700;">IA</span>
+                </label>
+                <input id="editPieza" type="text" style="width:100%; padding:9px 12px; border:1.5px solid #ececea; border-radius:9px; font-size:14px; font-weight:600; outline:none; box-sizing:border-box; transition:border .2s;"
+                  onfocus="this.style.borderColor='#2f5fdb'" onblur="this.style.borderColor='#ececea'">
+              </div>
+              <div>
+                <label style="font-size:11px; color:#9aa0aa; font-weight:600; text-transform:uppercase; letter-spacing:.4px; display:flex; align-items:center; gap:4px; margin-bottom:5px;">
+                  Código OEM <span style="font-size:9px; background:#eef3fc; color:#2f5fdb; padding:1px 5px; border-radius:4px; font-weight:700;">IA</span>
+                </label>
+                <input id="editOem" type="text" placeholder="Ej: 27060-21050" style="width:100%; padding:9px 12px; border:1.5px solid #ececea; border-radius:9px; font-size:13px; outline:none; box-sizing:border-box; transition:border .2s; font-family:'JetBrains Mono', monospace;"
+                  onfocus="this.style.borderColor='#2f5fdb'" onblur="this.style.borderColor='#ececea'">
+              </div>
+            </div>
+          </div>
+
+          <!-- Compatibilidad -->
+          <div style="margin-bottom:20px;">
+            <p style="font-size:11px; color:#9aa0aa; font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin:0 0 10px; display:flex; align-items:center; gap:4px;">
+              Compatibilidad de vehículos <span style="font-size:9px; background:#eef3fc; color:#2f5fdb; padding:1px 5px; border-radius:4px; font-weight:700;">IA</span>
+            </p>
+            <div id="compatList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+            <button onclick="agregarCompat()" style="margin-top:8px; display:inline-flex; align-items:center; gap:4px; font-size:12px; color:#2f5fdb; background:none; border:1.5px dashed #93c5fd; border-radius:20px; padding:4px 12px; cursor:pointer;">
+              + agregar vehículo
+            </button>
+          </div>
+
+          <div style="display:flex; gap:10px; justify-content:space-between; padding-top:16px; border-top:1px solid #ececea;">
+            <button onclick="mostrarPaso(1)" style="padding:11px 20px; border:1.5px solid #ececea; border-radius:10px; background:#fff; color:#6b7280; font-size:13px; font-weight:600; cursor:pointer;">← Nueva foto</button>
+            <button onclick="irAPaso3()" style="padding:11px 28px; background:#2f5fdb; color:#fff; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer;">
+              Continuar → Publicar
+            </button>
+          </div>
+        </div>
+
+        <div id="iaError" style="display:none; flex-direction:column; align-items:center; padding:32px 0; gap:14px; text-align:center;">
+          <div style="width:56px; height:56px; border-radius:50%; background:#fef3c7; border:2px solid #fcd34d; display:flex; align-items:center; justify-content:center; font-size:28px;">⏳</div>
+          <div>
+            <p style="font-weight:700; font-size:15px; color:#16181d; margin:0 0 6px;">No se pudo identificar</p>
+            <p id="iaErrorMsg" style="font-size:13px; color:#9aa0aa; margin:0; max-width:320px;"></p>
+          </div>
+          <button onclick="analizarFoto()" style="padding:10px 24px; background:#2f5fdb; color:#fff; border:none; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer;">🔄 Reintentar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3: PUBLICAR ══ -->
+  <div id="step3" class="step-content" style="display:none;">
+    <div style="background:#fff; border-radius:18px; border:1px solid #ececea; overflow:hidden;">
+      <div style="height:3px; background:#2f5fdb;"></div>
+      <div style="padding:28px 32px; display:flex; flex-direction:column; gap:20px;">
+        <div>
+          <h2 style="font-size:16px; font-weight:800; color:#16181d; margin:0 0 4px;">Personalizar y publicar</h2>
+          <p style="font-size:13px; color:#9aa0aa; margin:0;">Ajusta el precio y condición antes de publicar</p>
+        </div>
+
+        <!-- Precio + Envío -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px;">💲 Precio (CLP) *</label>
+            <div style="position:relative;">
+              <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-weight:700; color:#9aa0aa; font-size:16px;">$</span>
+              <input id="inputPrecio" type="text" placeholder="0"
+                oninput="formatearPrecio(this)"
+                style="width:100%; padding:11px 12px 11px 24px; border:1.5px solid #ececea; border-radius:10px; font-size:16px; font-weight:700; outline:none; box-sizing:border-box; transition:border .2s;"
+                onfocus="this.style.borderColor='#2f5fdb'" onblur="this.style.borderColor='#ececea'">
+            </div>
+            <p id="precioSugerido" style="font-size:11px; color:#9aa0aa; margin:5px 0 0;"></p>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px;">📦 Envío</label>
+            <select id="selectEnvio" style="width:100%; padding:11px 12px; border:1.5px solid #ececea; border-radius:10px; font-size:13px; outline:none; background:#fafafa; color:#16181d; box-sizing:border-box;">
+              <option value="Solo retiro en local">Solo retiro en local</option>
+              <option value="Envío a todo Chile" selected>Envío a todo Chile</option>
+              <option value="Envío región Araucanía">Envío región Araucanía</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Condición -->
+        <div>
+          <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:10px;">CONDICIÓN DE LA PIEZA</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <% [
+              { id:'excelente',    label:'Excelente',    desc:'Como nuevo, sin detalles',  color:'#1d4ed8', bg:'#dbeafe', border:'#93c5fd' },
+              { id:'bueno',        label:'Buen estado',  desc:'Uso normal, funciona bien', color:'#1d4ed8', bg:'#dbeafe', border:'#93c5fd' },
+              { id:'con-detalles', label:'Con detalles', desc:'Algunos detalles menores',  color:'#b45309', bg:'#fef3c7', border:'#fcd34d' },
+              { id:'para-reparar', label:'Para reparar', desc:'Requiere reparación',       color:'#b91c1c', bg:'#fee2e2', border:'#fca5a5' }
+            ].forEach(function(e){ %>
+              <button class="btn-condicion" data-id="<%= e.id %>" data-color="<%= e.color %>" data-bg="<%= e.bg %>" data-border="<%= e.border %>"
+                onclick="selCondicion('<%= e.id %>', '<%= e.color %>', '<%= e.bg %>', '<%= e.border %>')"
+                style="border:2px solid #e5e7eb; border-radius:12px; padding:12px; cursor:pointer; text-align:left; background:#fff; transition:all .15s;">
+                <p style="font-weight:700; font-size:13px; color:#374151; margin:0 0 2px;"><%= e.label %></p>
+                <p style="font-size:11px; color:#9aa0aa; margin:0;"><%= e.desc %></p>
+              </button>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div>
+          <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px;">DESCRIPCIÓN ADICIONAL (opcional)</label>
+          <textarea id="inputDesc" rows="3" placeholder="Ej: Desmontado de Chevrolet Spark 2014 accidentado. Funciona perfecto."
+            style="width:100%; padding:11px 12px; border:1.5px solid #ececea; border-radius:10px; font-size:13px; outline:none; resize:vertical; font-family:inherit; box-sizing:border-box; transition:border .2s;"
+            onfocus="this.style.borderColor='#2f5fdb'" onblur="this.style.borderColor='#ececea'"></textarea>
+        </div>
+
+        <!-- Canales -->
+        <div>
+          <label style="font-size:11px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:10px;">¿DÓNDE SE PUBLICARÁ?</label>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <label style="display:flex; align-items:center; gap:12px; border:2px solid #bfdbfe; border-radius:12px; padding:14px 16px; cursor:pointer; background:#eff6ff;">
+              <input type="checkbox" name="canal" value="componenta" checked style="width:16px; height:16px; accent-color:#2f5fdb;">
+              <div>
+                <p style="font-weight:700; font-size:14px; color:#16181d; margin:0 0 2px;">🏪 Componenta <span style="font-size:10px; background:#2f5fdb; color:#fff; padding:2px 7px; border-radius:20px; font-weight:700; margin-left:4px;">Recomendado</span></p>
+                <p style="font-size:12px; color:#9aa0aa; margin:0;">Visible en la vitrina de Componenta para todos los compradores</p>
+              </div>
+            </label>
+            <label style="display:flex; align-items:center; gap:12px; border:2px solid #ececea; border-radius:12px; padding:14px 16px; cursor:pointer; background:#fff;">
+              <input type="checkbox" name="canal" value="whatsapp" checked style="width:16px; height:16px; accent-color:#25d366;">
+              <div>
+                <p style="font-weight:700; font-size:14px; color:#16181d; margin:0 0 2px;">💬 WhatsApp</p>
+                <p style="font-size:12px; color:#9aa0aa; margin:0;">Los compradores contactarán directamente a tu número</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div id="publishError" style="display:none; background:#fef2f2; border:1.5px solid #fecaca; border-radius:10px; padding:12px 16px; font-size:13px; color:#b91c1c;"></div>
+
+        <!-- Botones -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid #ececea;">
+          <button onclick="mostrarPaso(2)" style="padding:11px 20px; border:1.5px solid #ececea; border-radius:10px; background:#fff; color:#6b7280; font-size:13px; font-weight:600; cursor:pointer;">← Volver</button>
+          <button id="btnPublicar" onclick="publicar()"
+            style="padding:12px 32px; background:#2f5fdb; color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:8px;">
+            🚀 Publicar ahora
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 4: ÉXITO ══ -->
+  <div id="stepExito" class="step-content" style="display:none;">
+    <div style="background:#fff; border-radius:18px; border:1px solid #ececea; padding:48px 32px; text-align:center;">
+      <div style="width:80px; height:80px; border-radius:50%; background:#dbeafe; border:3px solid #bfdbfe; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:40px;">✓</div>
+      <h2 style="font-size:22px; font-weight:900; color:#16181d; margin:0 0 8px;">¡Pieza publicada!</h2>
+      <p style="font-size:14px; color:#9aa0aa; margin:0 0 28px;">Ya es visible en la vitrina de Componenta</p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="/vitrina" style="padding:12px 24px; background:#16181d; color:#fff; border-radius:10px; text-decoration:none; font-size:14px; font-weight:700;">Ver vitrina</a>
+        <a href="/vendedor/nuevo" style="padding:12px 24px; background:#eff6ff; color:#2f5fdb; border-radius:10px; text-decoration:none; font-size:14px; font-weight:700; border:1.5px solid #bfdbfe;">Publicar otra pieza</a>
+        <a href="/vendedor/panel" style="padding:12px 24px; background:#f5f5f4; color:#374151; border-radius:10px; text-decoration:none; font-size:14px; font-weight:700;">Mi inventario</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .step-pill { transition: all .2s; }
+  .btn-condicion:focus { outline: none; }
+  @media (max-width: 560px) {
+    .step-label { display: none; }
+    main { padding: 16px 12px 80px; }
+    [style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+  }
+</style>
+
+<script>
+  // ── Estado global ──────────────────────────────────────────────────────────
+  let state = {
+    paso: 0,
+    vMarca: '', vModelo: '', vAnio: '',
+    fotoFile: null, rutaImagen: '',
+    pieza: '', categoria: '', marca: '', oem: '',
+    compatibilidad: [], confianza: 0,
+    descripcionIA: '',
+    precioMin: 0, precioMax: 0,
+    condicion: 'bueno',
+  };
+
+  // ── Navegación entre pasos ─────────────────────────────────────────────────
+  function mostrarPaso(n) {
+    document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+    const ids = ['step0','step1','step2','step3','stepExito'];
+    const el = document.getElementById(n === 4 ? 'stepExito' : ids[n]);
+    if (el) el.style.display = 'block';
+    state.paso = n;
+    actualizarIndicador(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function actualizarIndicador(pasoActivo) {
+    for (let i = 0; i < 4; i++) {
+      const pill  = document.querySelector(`.step-pill[data-step="${i}"]`);
+      const dot   = document.querySelector(`.step-dot[data-step="${i}"]`);
+      const label = document.querySelector(`.step-label[data-step="${i}"]`);
+      const line  = document.querySelector(`.step-line[data-after="${i}"]`);
+      if (!pill) continue;
+      const done    = i < pasoActivo;
+      const current = i === pasoActivo;
+      pill.style.background  = current ? '#eef3fc' : '#f5f5f4';
+      pill.style.borderColor = current ? '#d7e3f7' : '#ececea';
+      if (dot) {
+        dot.style.background = done || current ? '#2f5fdb' : '#d1d5db';
+        if (done) dot.innerHTML = '<span style="font-size:11px; color:#fff; font-weight:800;">✓</span>';
+      }
+      if (label) label.style.color = current ? '#16181d' : done ? '#2f5fdb' : '#9aa0aa';
+      if (line)  line.style.background = done ? '#2f5fdb' : '#ececea';
+    }
+  }
+
+  // ── Step 0: Vehículo ───────────────────────────────────────────────────────
+  function irAPaso1() {
+    state.vMarca  = document.getElementById('v_marca').value.trim();
+    state.vModelo = document.getElementById('v_modelo').value.trim();
+    state.vAnio   = document.getElementById('v_anio').value.trim();
+    mostrarPaso(1);
+  }
+  function irAPaso1Skip() {
+    state.vMarca = state.vModelo = state.vAnio = '';
+    mostrarPaso(1);
+  }
+
+  // ── Step 1: Foto ──────────────────────────────────────────────────────────
+  function onFotoSeleccionada(input) {
+    const file = input.files[0];
+    if (!file) return;
+    state.fotoFile = file;
+    const preview = document.getElementById('previewFoto');
+    const contenido = document.getElementById('zonaFotoContenido');
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      contenido.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+    const btn = document.getElementById('btnAnalizar');
+    btn.disabled = false;
+    btn.style.background = '#2f5fdb';
+    btn.style.color = '#fff';
+    btn.style.cursor = 'pointer';
+  }
+
+  // ── Step 2: Análisis IA ────────────────────────────────────────────────────
+  async function analizarFoto() {
+    if (!state.fotoFile) return;
+    mostrarPaso(2);
+    document.getElementById('iaLoading').style.display = 'flex';
+    document.getElementById('iaResultado').style.display = 'none';
+    document.getElementById('iaError').style.display = 'none';
+
+    const loadingText = document.getElementById('iaLoadingText');
+    if (state.vMarca) {
+      loadingText.textContent = `Identificando pieza para ${state.vMarca} ${state.vModelo} ${state.vAnio}…`;
+    }
+
+    const fd = new FormData();
+    fd.append('foto', state.fotoFile);
+    if (state.vMarca)  fd.append('marca',  state.vMarca);
+    if (state.vModelo) fd.append('modelo', state.vModelo);
+    if (state.vAnio)   fd.append('anio',   state.vAnio);
+
+    try {
+      const res  = await fetch('/vendedor/api/identificar', { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (!res.ok || data.esPieza === false) {
+        throw new Error(data.error || data.motivo || 'No se reconoció como pieza automotriz');
+      }
+
+      state.rutaImagen   = data.rutaImagen || '';
+      state.pieza        = data.pieza || data.nombre || '';
+      state.categoria    = data.categoria || '';
+      state.marca        = data.marca || '';
+      state.oem          = data.oem || '';
+      state.compatibilidad = data.compatibilidad || [];
+      state.confianza    = data.confianza || 0;
+      state.descripcionIA = data.descripcion || '';
+      state.precioMin    = data.precioSugeridoMinCLP || 0;
+      state.precioMax    = data.precioSugeridoMaxCLP || 0;
+
+      mostrarResultadoIA();
+    } catch (err) {
+      document.getElementById('iaLoading').style.display = 'none';
+      document.getElementById('iaError').style.display = 'flex';
+      document.getElementById('iaErrorMsg').textContent = err.message;
+    }
+  }
+
+  function mostrarResultadoIA() {
+    document.getElementById('iaLoading').style.display = 'none';
+    document.getElementById('iaError').style.display = 'none';
+    document.getElementById('iaResultado').style.display = 'block';
+
+    document.getElementById('editPieza').value = state.pieza;
+    document.getElementById('editOem').value   = state.oem || '';
+
+    const conf = state.confianza;
+    const badge = document.getElementById('badgeConfianza');
+    document.getElementById('txtConfianza').textContent = `${conf}% confianza`;
+    if (conf < 70) {
+      badge.style.background = '#fef3c7';
+      badge.style.borderColor = '#fcd34d';
+      badge.style.color = '#92400e';
+    }
+
+    const preview = document.getElementById('previewFoto');
+    document.getElementById('imgPreviewStep2').src = preview.src;
+
+    renderCompatList();
+  }
+
+  function renderCompatList() {
+    const container = document.getElementById('compatList');
+    container.innerHTML = '';
+    state.compatibilidad.forEach((c, i) => {
+      const texto = [c.marca, c.modelo, c.anios].filter(Boolean).join(' ');
+      const chip = document.createElement('div');
+      chip.style.cssText = 'display:flex; align-items:center; gap:6px; background:#f0f4ff; border:1.5px solid #c7d7fc; border-radius:20px; padding:4px 10px; font-size:12px; color:#1e3a8a;';
+      chip.innerHTML = `<span contenteditable="true" style="outline:none;" onblur="actualizarCompat(${i}, this.textContent)">${texto}</span>
+        <button onclick="quitarCompat(${i})" style="background:none; border:none; cursor:pointer; color:#9aa0aa; font-size:14px; line-height:1; padding:0;">×</button>`;
+      container.appendChild(chip);
+    });
+  }
+
+  function agregarCompat() {
+    state.compatibilidad.push({ marca: state.vMarca || '', modelo: '', anios: '' });
+    renderCompatList();
+    // Foco en el último chip
+    setTimeout(() => {
+      const chips = document.querySelectorAll('#compatList [contenteditable]');
+      if (chips.length) chips[chips.length - 1].focus();
+    }, 50);
+  }
+
+  function quitarCompat(i) {
+    state.compatibilidad.splice(i, 1);
+    renderCompatList();
+  }
+
+  function actualizarCompat(i, texto) {
+    const partes = texto.trim().split(/\s+/);
+    state.compatibilidad[i] = {
+      marca: partes[0] || '',
+      modelo: partes[1] || '',
+      anios: partes.slice(2).join(' ') || '',
+    };
+  }
+
+  // ── Step 3: Publicar ───────────────────────────────────────────────────────
+  function irAPaso3() {
+    state.pieza = document.getElementById('editPieza').value;
+    state.oem   = document.getElementById('editOem').value;
+    mostrarPaso(3);
+
+    if (state.precioMin) {
+      document.getElementById('precioSugerido').textContent =
+        `Precio sugerido IA: $${state.precioMin.toLocaleString('es-CL')} – $${state.precioMax.toLocaleString('es-CL')}`;
+    }
+    if (!document.querySelector('.btn-condicion[data-id="bueno"]').style.background) {
+      selCondicion('bueno', '#1d4ed8', '#dbeafe', '#93c5fd');
+    }
+    if (state.descripcionIA && !document.getElementById('inputDesc').value) {
+      document.getElementById('inputDesc').value = state.descripcionIA;
+    }
+  }
+
+  function selCondicion(id, color, bg, border) {
+    state.condicion = id;
+    document.querySelectorAll('.btn-condicion').forEach(btn => {
+      if (btn.dataset.id === id) {
+        btn.style.borderColor = btn.dataset.border;
+        btn.style.background  = btn.dataset.bg;
+        btn.querySelector('p').style.color = btn.dataset.color;
+      } else {
+        btn.style.borderColor = '#e5e7eb';
+        btn.style.background  = '#fff';
+        btn.querySelector('p').style.color = '#374151';
+      }
+    });
+  }
+
+  function formatearPrecio(input) {
+    const raw = input.value.replace(/\D/g, '');
+    input.value = raw ? parseInt(raw).toLocaleString('es-CL') : '';
+  }
+
+  async function publicar() {
+    const precioStr = document.getElementById('inputPrecio').value.replace(/\D/g, '');
+    if (!precioStr) {
+      alert('Ingresa un precio antes de publicar');
+      return;
+    }
+    const canales = Array.from(document.querySelectorAll('input[name="canal"]:checked')).map(c => c.value);
+    const btn = document.getElementById('btnPublicar');
+    btn.disabled = true;
+    btn.innerHTML = '<span style="width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .8s linear infinite;"></span> Publicando…';
+    document.getElementById('publishError').style.display = 'none';
+
+    try {
+      const res = await fetch('/vendedor/api/publicar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pieza:          state.pieza,
+          categoria:      state.categoria,
+          marca:          state.marca,
+          oem:            state.oem,
+          compatibilidad: state.compatibilidad,
+          precio:         parseInt(precioStr),
+          envio:          document.getElementById('selectEnvio').value,
+          descripcion:    document.getElementById('inputDesc').value,
+          condicion:      state.condicion,
+          canales,
+          rutaImagen:     state.rutaImagen,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+      mostrarPaso(4);
+    } catch (err) {
+      const errEl = document.getElementById('publishError');
+      errEl.style.display = 'block';
+      errEl.textContent = '⚠️ ' + err.message;
+      btn.disabled = false;
+      btn.innerHTML = '🚀 Publicar ahora';
+    }
+  }
+
+  // Inicializar
+  mostrarPaso(0);
+</script>
+
+</body>
+</html>

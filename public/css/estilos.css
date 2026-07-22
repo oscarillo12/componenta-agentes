@@ -1,0 +1,361 @@
+/* ===== Componenta — sistema visual =====
+   Inspirado en desarmadurías reales: galpón, metal, papel kraft de boleta,
+   naranja de advertencia de taller. Nada de SaaS genérico. */
+
+:root {
+  --kraft: #EDE7DA;
+  --kraft-osc: #DCD4C0;
+  --grafito: #1A1D1F;
+  --grafito-suave: #2A2E31;
+  --oxido: #D9480F;
+  --oxido-osc: #B53D0C;
+  --verde-taller: #2D5F4C;
+  --cemento: #8A8378;
+  --blanco: #FFFDF8;
+  --borde: #c9c0ab;
+
+  --fuente-display: "Oswald", "Arial Narrow", sans-serif;
+  --fuente-cuerpo: "Inter", -apple-system, sans-serif;
+  --fuente-dato: "JetBrains Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--kraft);
+  color: var(--grafito);
+  font-family: var(--fuente-cuerpo);
+  line-height: 1.5;
+}
+
+h1, h2, h3, .display {
+  font-family: var(--fuente-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  margin: 0;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- Header ---------- */
+.header {
+  background: var(--grafito);
+  color: var(--kraft);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 5px solid var(--oxido);
+}
+
+.header .logo {
+  font-family: var(--fuente-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.header .logo .punto { color: var(--oxido); }
+
+.header nav { display: flex; gap: 18px; align-items: center; font-size: 0.92rem; }
+
+.header nav a {
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.header nav a:hover { border-color: var(--oxido); color: var(--oxido); }
+
+.btn {
+  display: inline-block;
+  font-family: var(--fuente-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 12px 22px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.btn-primario { background: var(--oxido); color: var(--blanco); }
+.btn-primario:hover { background: var(--oxido-osc); }
+.btn-secundario { background: transparent; color: var(--grafito); border: 2px solid var(--grafito); }
+.btn-secundario:hover { background: var(--grafito); color: var(--kraft); }
+.btn-verde { background: var(--verde-taller); color: var(--blanco); }
+.btn-block { width: 100%; text-align: center; }
+
+/* ---------- Contenedores ---------- */
+.contenedor { max-width: 1180px; margin: 0 auto; padding: 32px 24px; }
+.contenedor-angosto { max-width: 560px; margin: 0 auto; padding: 48px 24px; }
+
+/* ---------- Hero vitrina ---------- */
+.hero {
+  background: var(--grafito);
+  color: var(--kraft);
+  padding: 56px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 260px; height: 260px;
+  border: 18px solid var(--oxido);
+  border-radius: 50%;
+  opacity: 0.15;
+}
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  max-width: 720px;
+}
+.hero h1 .acento { color: var(--oxido); }
+.hero p { color: var(--cemento); max-width: 540px; margin-top: 14px; font-size: 1.05rem; }
+
+.buscador {
+  margin-top: 28px;
+  display: flex;
+  max-width: 520px;
+  border: 2px solid var(--oxido);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.buscador input {
+  flex: 1;
+  border: none;
+  padding: 14px 16px;
+  font-size: 1rem;
+  background: var(--blanco);
+  font-family: var(--fuente-cuerpo);
+}
+.buscador input:focus { outline: none; }
+.buscador button {
+  background: var(--oxido);
+  color: var(--blanco);
+  border: none;
+  padding: 0 22px;
+  font-family: var(--fuente-display);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* ---------- Grid de piezas (ficha de bodega) ---------- */
+.grid-piezas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 22px;
+  margin-top: 32px;
+}
+
+.ficha-pieza {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.ficha-pieza:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(26,29,31,0.18);
+}
+
+.ficha-pieza .etiqueta-cat {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: var(--grafito);
+  color: var(--kraft);
+  font-family: var(--fuente-dato);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 9px;
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.ficha-pieza .foto-wrap {
+  aspect-ratio: 4/3;
+  background: var(--kraft-osc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ficha-pieza img { width: 100%; height: 100%; object-fit: cover; }
+
+.ficha-pieza .info { padding: 14px 16px 18px; }
+.ficha-pieza .info h3 { font-size: 1.05rem; }
+.ficha-pieza .vehiculo {
+  font-family: var(--fuente-dato);
+  font-size: 0.78rem;
+  color: var(--cemento);
+  margin-top: 4px;
+}
+.ficha-pieza .precio {
+  font-family: var(--fuente-display);
+  color: var(--oxido);
+  font-size: 1.3rem;
+  margin-top: 10px;
+}
+
+/* ---------- Badge de fuente (MercadoLibre / Facebook) ---------- */
+.badge-fuente {
+  position: absolute;
+  top: 10px; right: 10px;
+  font-size: 0.65rem;
+  font-family: var(--fuente-dato);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 7px;
+  border-radius: 2px;
+  z-index: 2;
+}
+.badge-mercadolibre {
+  background: #FFE600;
+  color: #333;
+}
+.badge-facebook {
+  background: #1877F2;
+  color: #fff;
+}
+
+.ficha-pieza .sin-foto {
+  color: var(--cemento);
+  font-size: 0.8rem;
+  font-family: var(--fuente-dato);
+}
+
+/* ---------- Detalle de pieza ---------- */
+.detalle-pieza {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 40px;
+  margin-top: 12px;
+}
+@media (max-width: 760px) {
+  .detalle-pieza { grid-template-columns: 1fr; }
+}
+.detalle-pieza .foto-grande {
+  background: var(--kraft-osc);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.detalle-pieza .foto-grande img { width: 100%; display: block; }
+
+.ficha-tecnica {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-left: 6px solid var(--oxido);
+  padding: 20px 22px;
+  margin-top: 18px;
+}
+.ficha-tecnica dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
+.ficha-tecnica dt { font-family: var(--fuente-dato); font-size: 0.78rem; color: var(--cemento); text-transform: uppercase; }
+.ficha-tecnica dd { margin: 0; font-weight: 500; }
+
+.precio-grande {
+  font-family: var(--fuente-display);
+  color: var(--oxido);
+  font-size: 2.2rem;
+  margin-top: 18px;
+}
+
+/* ---------- Formularios ---------- */
+.tarjeta {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  padding: 28px;
+}
+.campo { margin-bottom: 16px; }
+.campo label {
+  display: block;
+  font-family: var(--fuente-dato);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cemento);
+  margin-bottom: 6px;
+}
+.campo input, .campo textarea, .campo select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--borde);
+  border-radius: 2px;
+  font-family: var(--fuente-cuerpo);
+  font-size: 0.98rem;
+  background: var(--blanco);
+}
+.campo input:focus, .campo textarea:focus, .campo select:focus {
+  outline: 2px solid var(--oxido);
+  outline-offset: 1px;
+}
+.campo textarea { resize: vertical; min-height: 90px; }
+
+.alerta {
+  background: #FBE7DD;
+  border: 1px solid var(--oxido);
+  color: var(--oxido-osc);
+  padding: 12px 16px;
+  border-radius: 3px;
+  font-size: 0.92rem;
+  margin-bottom: 18px;
+}
+
+.zona-subida {
+  border: 2px dashed var(--cemento);
+  border-radius: 4px;
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--blanco);
+  cursor: pointer;
+}
+.zona-subida:hover { border-color: var(--oxido); }
+.zona-subida p { color: var(--cemento); margin-top: 8px; font-size: 0.92rem; }
+
+/* ---------- Panel vendedor: tabla piezas ---------- */
+.tabla-piezas { width: 100%; border-collapse: collapse; margin-top: 18px; background: var(--blanco); }
+.tabla-piezas th {
+  text-align: left;
+  font-family: var(--fuente-dato);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--cemento);
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--grafito);
+}
+.tabla-piezas td { padding: 12px; border-bottom: 1px solid var(--borde); vertical-align: middle; }
+.tabla-piezas img.miniatura { width: 52px; height: 52px; object-fit: cover; border-radius: 2px; }
+
+.pill {
+  display: inline-block;
+  font-family: var(--fuente-dato);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 10px;
+}
+.pill-disponible { background: #E2EFE9; color: var(--verde-taller); }
+.pill-vendido { background: #ECECEC; color: var(--cemento); }
+
+.vacio {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--cemento);
+}
+.vacio .display { font-size: 1.4rem; color: var(--grafito); margin-bottom: 8px; }
+
+footer.pie {
+  text-align: center;
+  padding: 28px;
+  color: var(--cemento);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--borde);
+}

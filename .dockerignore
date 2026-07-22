@@ -1,0 +1,8 @@
+.cache
+build
+node_modules
+.env
+agentes/fb-session.json
+db/componenta.db
+db/componenta.db-shm
+db/componenta.db-wal

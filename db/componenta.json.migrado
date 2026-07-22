@@ -1,0 +1,27 @@
+{
+  "vendedores": [
+    {
+      "id": "12c40912-4f71-4c53-944c-6b54772cadfe",
+      "nombre": "Oscar Elgueta",
+      "telefono": "957661550",
+      "negocio": "Desarmaduria San Pablo ",
+      "creadoEn": "2026-06-20T03:27:36.387Z"
+    }
+  ],
+  "piezas": [
+    {
+      "id": "2c3738c3-170e-45e6-a05f-3a49c16c67aa",
+      "estado": "disponible",
+      "creadoEn": "2026-06-20T03:29:50.300Z",
+      "vendedorId": "12c40912-4f71-4c53-944c-6b54772cadfe",
+      "nombre": "Cuerpo de Aceleración Electrónico",
+      "categoria": "Motor",
+      "marcaVehiculoProbable": "Mazda ",
+      "modeloVehiculoProbable": "Mazda 2",
+      "estadoVisual": "Buen estado visual general, con el desgaste normal de uso y algo de suciedad superficial.",
+      "descripcion": "¡Ojo con este cuerpo de aceleración electrónico! Es una pieza fundamental para que tu motor funcione parejito y sin problemas. Se ve en buen estado visual, listo para instalar y darle nueva vida a tu auto. ¡No te quedes parado por una falla de aceleración, aprovecha esta oportunidad!",
+      "precio": 35000,
+      "imagen": "/uploads/14c0770c-4aff-42b5-98e6-f9376cd0fef4.png"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/cabeza', { titulo: pieza.nombre + ' — Componenta' }) %>
+<body>
+  <%- include('../partials/header-publico') %>
+
+  <div class="contenedor">
+    <a href="/" style="color:var(--cemento); font-size:0.9rem;">&larr; Volver al catálogo</a>
+
+    <div class="detalle-pieza">
+      <div class="foto-grande">
+        <img src="<%= pieza.imagen %>" alt="<%= pieza.nombre %>" />
+      </div>
+
+      <div>
+        <span class="etiqueta-cat" style="position:static; display:inline-block;"><%= pieza.categoria %></span>
+        <h1 class="display" style="font-size:1.9rem; margin-top:10px;"><%= pieza.nombre %></h1>
+
+        <p style="margin-top:12px; color:var(--grafito); font-size:1.02rem;">
+          <%= pieza.descripcion %>
+        </p>
+
+        <div class="precio-grande">$<%= Number(pieza.precio).toLocaleString('es-CL') %></div>
+
+        <div class="ficha-tecnica">
+          <dl>
+            <dt>Vehículo</dt>
+            <dd><%= pieza.marcaVehiculoProbable || 'No especificado' %></dd>
+            <dt>Modelo / años</dt>
+            <dd><%= pieza.modeloVehiculoProbable || 'No especificado' %></dd>
+            <dt>Estado</dt>
+            <dd><%= pieza.estadoVisual %></dd>
+            <dt>Vendedor</dt>
+            <dd><%= vendedor ? (vendedor.negocio || vendedor.nombre) : 'Componenta' %></dd>
+          </dl>
+        </div>
+
+        <% if (vendedor && vendedor.telefono) { %>
+          <a
+            class="btn btn-verde btn-block"
+            style="margin-top:20px;"
+            target="_blank"
+            rel="noopener"
+            href="https://wa.me/<%= vendedor.telefono.replace(/\D/g, '') %>?text=<%= encodeURIComponent('Hola, me interesa la pieza: ' + pieza.nombre + ' que vi en componenta.cl') %>"
+          >
+            Consultar por WhatsApp
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/pie') %>
+</body>
+</html>

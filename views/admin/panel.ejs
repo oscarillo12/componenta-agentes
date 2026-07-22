@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/cabeza', { titulo: 'Admin — Componenta' }) %>
+<body class="admin-body">
+
+<header class="admin-header">
+  <div class="admin-header-inner">
+    <span class="admin-logo">⚙️ Componenta <span class="admin-tag">Admin</span></span>
+    <a href="/" class="btn-volver">← Ver vitrina</a>
+  </div>
+</header>
+
+<main class="admin-main">
+
+  <!-- Resumen de datos -->
+  <section class="admin-section">
+    <h2 class="section-title">Inventario total</h2>
+    <div class="admin-cards">
+      <div class="admin-card card-meli">
+        <div class="card-numero"><%= totales.mercadolibre || 0 %></div>
+        <div class="card-label">MercadoLibre</div>
+      </div>
+      <div class="admin-card card-fb">
+        <div class="card-numero"><%= totales.facebook || 0 %></div>
+        <div class="card-label">Facebook</div>
+      </div>
+      <div class="admin-card card-total">
+        <div class="card-numero"><%= (totales.mercadolibre || 0) + (totales.facebook || 0) %></div>
+        <div class="card-label">Total agregados</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Estado de agentes -->
+  <section class="admin-section">
+    <h2 class="section-title">Agentes de scraping</h2>
+    <div class="agentes-grid">
+
+      <!-- Agente MercadoLibre -->
+      <div class="agente-card">
+        <div class="agente-header">
+          <span class="agente-nombre">MercadoLibre</span>
+          <span class="agente-badge badge-<%= estadoAgentes.mercadolibre.estado %>">
+            <%= estadoAgentes.mercadolibre.estado === 'corriendo' ? '⟳ Corriendo' :
+                estadoAgentes.mercadolibre.estado === 'ok'        ? '✓ OK' :
+                estadoAgentes.mercadolibre.estado === 'error'     ? '✗ Error' : '○ Pendiente' %>
+          </span>
+        </div>
+        <div class="agente-info">
+          <p class="agente-mensaje"><%= estadoAgentes.mercadolibre.mensaje || 'Nunca ha corrido en esta sesión' %></p>
+          <p class="agente-horario">⏰ Automático: 8am · 12pm · 4pm · 8pm</p>
+          <% if (estadoAgentes.mercadolibre.ultimaCorrida) { %>
+            <p class="agente-ultima">Última corrida: <%= new Date(estadoAgentes.mercadolibre.ultimaCorrida).toLocaleString('es-CL') %></p>
+          <% } %>
+        </div>
+        <form method="POST" action="/admin/correr/mercadolibre" class="agente-form">
+          <button type="submit"
+            class="btn-correr"
+            <%= estadoAgentes.mercadolibre.estado === 'corriendo' ? 'disabled' : '' %>>
+            <%= estadoAgentes.mercadolibre.estado === 'corriendo' ? 'Corriendo...' : '▶ Correr ahora' %>
+          </button>
+        </form>
+      </div>
+
+      <!-- Agente Facebook -->
+      <div class="agente-card">
+        <div class="agente-header">
+          <span class="agente-nombre">Facebook Marketplace</span>
+          <span class="agente-badge badge-<%= estadoAgentes.facebook.estado %>">
+            <%= estadoAgentes.facebook.estado === 'corriendo' ? '⟳ Corriendo' :
+                estadoAgentes.facebook.estado === 'ok'        ? '✓ OK' :
+                estadoAgentes.facebook.estado === 'error'     ? '✗ Error' : '○ Pendiente' %>
+          </span>
+        </div>
+        <div class="agente-info">
+          <p class="agente-mensaje"><%= estadoAgentes.facebook.mensaje || 'Nunca ha corrido en esta sesión' %></p>
+          <p class="agente-horario">⏰ Automático: 9am · 3pm · 9pm</p>
+          <% if (estadoAgentes.facebook.ultimaCorrida) { %>
+            <p class="agente-ultima">Última corrida: <%= new Date(estadoAgentes.facebook.ultimaCorrida).toLocaleString('es-CL') %></p>
+          <% } %>
+        </div>
+        <form method="POST" action="/admin/correr/facebook" class="agente-form">
+          <button type="submit"
+            class="btn-correr"
+            <%= estadoAgentes.facebook.estado === 'corriendo' ? 'disabled' : '' %>>
+            <%= estadoAgentes.facebook.estado === 'corriendo' ? 'Corriendo...' : '▶ Correr ahora' %>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Horarios -->
+  <section class="admin-section">
+    <h2 class="section-title">Próximas corridas automáticas</h2>
+    <p class="admin-nota">El scheduler corre los agentes automáticamente mientras el servidor esté activo. Zona horaria: Santiago, Chile.</p>
+    <table class="horarios-tabla">
+      <thead>
+        <tr><th>Agente</th><th>Horarios</th><th>Frecuencia</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>MercadoLibre</td>
+          <td>08:00 · 12:00 · 16:00 · 20:00</td>
+          <td>4 veces al día</td>
+        </tr>
+        <tr>
+          <td>Facebook</td>
+          <td>09:00 · 15:00 · 21:00</td>
+          <td>3 veces al día</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<style>
+.admin-body { background: #f0f2f5; min-height: 100vh; font-family: 'Inter', sans-serif; }
+
+.admin-header { background: #1a1a2e; padding: 14px 24px; }
+.admin-header-inner { max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.admin-logo { color: #fff; font-weight: 700; font-size: 1.1rem; }
+.admin-tag { background: #e63946; color: #fff; border-radius: 4px; padding: 2px 7px; font-size: 0.7rem; margin-left: 8px; vertical-align: middle; }
+.btn-volver { color: #aaa; text-decoration: none; font-size: 0.85rem; }
+.btn-volver:hover { color: #fff; }
+
+.admin-main { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+.admin-section { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.section-title { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin: 0 0 20px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.admin-cards { display: flex; gap: 16px; flex-wrap: wrap; }
+.admin-card { flex: 1; min-width: 140px; border-radius: 10px; padding: 20px; text-align: center; }
+.card-meli { background: #FFF9E0; border: 2px solid #FFE600; }
+.card-fb   { background: #EBF3FF; border: 2px solid #1877F2; }
+.card-total { background: #f0f0f0; border: 2px solid #999; }
+.card-numero { font-size: 2.2rem; font-weight: 800; color: #1a1a2e; }
+.card-label  { font-size: 0.8rem; color: #666; margin-top: 4px; font-weight: 500; }
+
+.agentes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 640px) { .agentes-grid { grid-template-columns: 1fr; } }
+
+.agente-card { border: 1px solid #e5e5e5; border-radius: 10px; padding: 20px; }
+.agente-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.agente-nombre { font-weight: 700; font-size: 0.95rem; color: #1a1a2e; }
+.agente-badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.badge-pendiente { background: #f0f0f0; color: #888; }
+.badge-corriendo { background: #FFF3CD; color: #856404; }
+.badge-ok        { background: #D1FAE5; color: #065F46; }
+.badge-error     { background: #FEE2E2; color: #991B1B; }
+
+.agente-info { margin-bottom: 16px; }
+.agente-mensaje { font-size: 0.85rem; color: #444; margin: 0 0 6px; }
+.agente-horario { font-size: 0.78rem; color: #888; margin: 0 0 4px; }
+.agente-ultima  { font-size: 0.78rem; color: #888; margin: 0; }
+
+.agente-form { margin-top: 12px; }
+.btn-correr { background: #1a1a2e; color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; }
+.btn-correr:hover:not(:disabled) { background: #2d2d50; }
+.btn-correr:disabled { background: #ccc; cursor: not-allowed; }
+
+.admin-nota { font-size: 0.85rem; color: #888; margin: -8px 0 16px; }
+.horarios-tabla { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.horarios-tabla th { text-align: left; padding: 8px 12px; background: #f8f8f8; color: #666; font-weight: 600; border-bottom: 2px solid #e5e5e5; }
+.horarios-tabla td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; color: #333; }
+.horarios-tabla tr:last-child td { border-bottom: none; }
+</style>
+
+</body>
+</html>

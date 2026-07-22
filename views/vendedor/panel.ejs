@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/cabeza', { titulo: 'Mi panel — Componenta' }) %>
+<body>
+  <%- include('../partials/header-vendedor') %>
+
+  <div class="contenedor">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h1 class="display" style="font-size:1.9rem;">Mi inventario</h1>
+        <p style="color:var(--cemento); margin-top:4px;">Gestiona tus repuestos publicados en Componenta</p>
+      </div>
+      <a href="/vendedor/nuevo" class="btn btn-primario" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; padding:12px 22px;">
+        📷 Publicar nueva pieza
+      </a>
+    </div>
+
+    <% if (error) { %>
+      <div class="alerta" style="margin-top:18px;"><%= error %></div>
+    <% } %>
+
+    <hr style="border:none; border-top:1px solid var(--borde); margin:40px 0;" />
+
+    <div style="display:flex; align-items:baseline; justify-content:space-between;">
+      <h2 class="display" style="font-size:1.4rem;">Mi inventario</h2>
+      <span style="color:var(--cemento); font-family: var(--fuente-dato); font-size:0.85rem;">
+        <%= piezas.length %> publicada<%= piezas.length === 1 ? '' : 's' %>
+      </span>
+    </div>
+
+    <% if (piezas.length === 0) { %>
+      <div class="vacio">
+        <div class="display">Aún no tienes piezas publicadas</div>
+        <p>Sube tu primera foto arriba para empezar a vender en componenta.cl</p>
+      </div>
+    <% } else { %>
+      <table class="tabla-piezas">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Pieza</th>
+            <th>Vehículo</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% piezas.forEach(p => { %>
+            <tr>
+              <td><img class="miniatura" src="<%= p.imagen %>" alt="<%= p.nombre %>" /></td>
+              <td>
+                <strong><%= p.nombre %></strong><br/>
+                <span style="font-size:0.82rem; color:var(--cemento);"><%= p.categoria %></span>
+              </td>
+              <td style="font-size:0.88rem;">
+                <%= p.marcaVehiculoProbable || '—' %><br/>
+                <span style="color:var(--cemento);"><%= p.modeloVehiculoProbable || '' %></span>
+              </td>
+              <td style="font-family:var(--fuente-dato);">$<%= Number(p.precio).toLocaleString('es-CL') %></td>
+              <td>
+                <span class="pill <%= p.estado === 'disponible' ? 'pill-disponible' : 'pill-vendido' %>">
+                  <%= p.estado %>
+                </span>
+              </td>
+              <td>
+                <% if (p.estado === 'disponible') { %>
+                  <form method="POST" action="/vendedor/panel/piezas/<%= p.id %>/vendido">
+                    <button type="submit" class="btn btn-secundario" style="padding:6px 12px; font-size:0.78rem;">
+                      Marcar vendido
+                    </button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+
+  <%- include('../partials/pie') %>
+
+  <script>
+    const input = document.getElementById('foto');
+    const zona = document.getElementById('zonaSubida');
+    const nombreArchivo = document.getElementById('nombreArchivo');
+    const btn = document.getElementById('btnAnalizar');
+    const form = document.getElementById('formSubida');
+
+    zona.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => {
+      if (input.files[0]) {
+        nombreArchivo.textContent = input.files[0].name;
+      }
+    });
+    form.addEventListener('submit', () => {
+      btn.textContent = 'Analizando foto con IA...';
+      btn.disabled = true;
+    });
+  </script>
+</body>
+</html>

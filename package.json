@@ -1,0 +1,29 @@
+{
+  "name": "componenta",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^2.9.0",
+    "@playwright/test": "^1.61.1",
+    "@supabase/supabase-js": "^2.110.7",
+    "better-sqlite3": "^12.11.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "lowdb": "^7.0.1",
+    "multer": "^2.2.0",
+    "node-cron": "^4.6.0",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}

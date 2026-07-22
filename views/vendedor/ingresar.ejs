@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/cabeza', { titulo: 'Ingresar — Componenta' }) %>
+<body>
+  <%- include('../partials/header-publico') %>
+
+  <div class="contenedor-angosto">
+    <h1 class="display" style="font-size:1.8rem; margin-bottom:6px;">Panel de tu desarmaduría</h1>
+    <p style="color:var(--cemento); margin-bottom: 26px;">
+      Ingresa tu nombre y teléfono. Si es tu primera vez, creamos tu cuenta al tiro.
+    </p>
+
+    <% if (error) { %>
+      <div class="alerta"><%= error %></div>
+    <% } %>
+
+    <form class="tarjeta" method="POST" action="/vendedor/ingresar">
+      <div class="campo">
+        <label for="nombre">Tu nombre</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej: Carlos Muñoz" required />
+      </div>
+      <div class="campo">
+        <label for="telefono">Teléfono (sirve como tu usuario)</label>
+        <input type="tel" id="telefono" name="telefono" placeholder="+56 9 1234 5678" required />
+      </div>
+      <div class="campo">
+        <label for="negocio">Nombre de tu desarmaduría</label>
+        <input type="text" id="negocio" name="negocio" placeholder="Ej: Desarmaduría Los Pinos" />
+      </div>
+      <button type="submit" class="btn btn-primario btn-block">Ingresar al panel</button>
+    </form>
+  </div>
+
+  <%- include('../partials/pie') %>
+</body>
+</html>
