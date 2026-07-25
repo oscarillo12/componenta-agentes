@@ -1,6 +1,7 @@
 // Scheduler de agentes Componenta
-// MercadoLibre: 4x/día — 00:00, 06:00, 12:00, 18:00
-// Facebook:     3x/día — 01:00, 09:00, 17:00
+// MeLi Publisher:  1x/día — 09:00
+// MeLi Scraper:    4x/día — 00:00, 06:00, 12:00, 18:00
+// Facebook:        3x/día — 01:00, 09:00, 17:00
 
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') })
 
@@ -28,39 +29,40 @@ function correrAgente(script) {
   })
 }
 
-async function correrSecuencial() {
+async function cicloCompleto() {
   if (corriendo) {
     console.log('⚠️  Ya hay un ciclo en curso, saltando...')
     return
   }
   corriendo = true
   try {
-    await correrAgente('meli.js')
-    await correrAgente('facebook.js')
+    await correrAgente('meli-scraper.js')  // llena vitrina con repuestos de MeLi
+    await correrAgente('facebook.js')      // llena vitrina con repuestos de Facebook
   } finally {
     corriendo = false
   }
 }
 
-// MercadoLibre solo: 06:00, 12:00, 18:00 (el de 00:00 lo hace el ciclo completo)
-cron.schedule('0 6,12,18 * * *', () => correrAgente('meli.js'), {
+// MeLi Scraper vitrina: 00:00 / 06:00 / 12:00 / 18:00
+cron.schedule('0 0,6,12,18 * * *', () => correrAgente('meli-scraper.js'), {
   timezone: 'America/Santiago',
 })
 
-// Ciclo completo: 00:00 y 09:00
-cron.schedule('0 0,9 * * *', correrSecuencial, {
+// Facebook: 01:00 / 09:00 / 17:00 (incluye subida de imágenes a Storage)
+cron.schedule('0 1,9,17 * * *', () => correrAgente('facebook.js'), {
   timezone: 'America/Santiago',
 })
 
-// Facebook por su cuenta: 17:00
-cron.schedule('0 17 * * *', () => correrAgente('facebook.js'), {
+// MeLi Publisher (publica piezas propias a MeLi): 09:00
+cron.schedule('0 9 * * *', () => correrAgente('meli.js'), {
   timezone: 'America/Santiago',
 })
 
 console.log('🕐 Scheduler Componenta iniciado')
-console.log('   MeLi  → 00:00 / 06:00 / 12:00 / 18:00 (Santiago)')
-console.log('   FB    → 00:00 / 09:00 / 17:00 (Santiago)')
+console.log('   MeLi Scraper  → 00:00 / 06:00 / 12:00 / 18:00 (Santiago)')
+console.log('   Facebook      → 01:00 / 09:00 / 17:00 (Santiago)')
+console.log('   MeLi Publisher → 09:00 (Santiago)')
 console.log('')
 
-// Correr ambos al arrancar para poblar la DB inmediatamente
-correrSecuencial()
+// Correr scraper al arrancar para poblar la DB inmediatamente
+cicloCompleto()

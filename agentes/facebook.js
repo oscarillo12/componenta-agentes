@@ -9,7 +9,7 @@ const { chromium } = require("playwright-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const path = require("path");
 const fs = require("fs");
-const { guardarListingsExternos, contarListingsExternos } = require("./supabase-client");
+const { guardarListingsExternos, contarListingsExternos, procesarImagenesItems } = require("./supabase-client");
 
 chromium.use(StealthPlugin());
 
@@ -357,6 +357,14 @@ async function ejecutar() {
   await browser.close();
 
   const items = Array.from(todosLosItems.values());
+
+  // Subir imágenes a Supabase Storage para que las URLs no expiren nunca
+  // (las URLs de scontent de Facebook caducan en 24-48h)
+  if (items.length > 0) {
+    console.log(`\n📷 Subiendo ${items.filter(i => i.imagen).length} imágenes a almacenamiento permanente...`);
+    await procesarImagenesItems(items);
+  }
+
   console.log(`\n💾 Guardando ${items.length} listings únicos de Facebook...`);
 
   if (items.length > 0) {

@@ -1,0 +1,24 @@
+name: MeLi Scraper Vitrina
+
+on:
+  schedule:
+    # 4x/día en hora Chile (UTC-4): 04:00, 10:00, 16:00, 22:00 UTC
+    - cron: '0 4,10,16,22 * * *'
+  workflow_dispatch: # ejecutar manualmente desde GitHub Actions
+
+jobs:
+  scraper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Raspar repuestos de MercadoLibre y guardar en DB
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node agentes/meli-scraper.js
