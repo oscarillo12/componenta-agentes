@@ -164,8 +164,9 @@ async function publicarProducto(product, token) {
     "Consultas sin compromiso.",
   ].filter(Boolean).join("\n");
 
-  // Atributos
+  // Atributos — ITEM_CONDITION requiere value_id numérico (2230284 = Usado)
   const attributes = [];
+  attributes.push({ id: "ITEM_CONDITION", value_id: "2230284" });
   if (product.marca)  attributes.push({ id: "BRAND",             value_name: product.marca });
   if (product.modelo) attributes.push({ id: "MODEL",             value_name: product.modelo });
   if (product.oem)    attributes.push({ id: "PART_NUMBER",       value_name: product.oem });
