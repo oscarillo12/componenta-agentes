@@ -43,11 +43,29 @@ const BUSQUEDAS_MARKETPLACE = [
 
 // Búsquedas en grupos y publicaciones públicas
 const BUSQUEDAS_GRUPOS = [
-  "repuestos auto temuco",
-  "alternador temuco",
-  "piezas auto temuco",
+  // Por marca/modelo popular en Chile
+  "repuestos toyota hilux chile",
+  "repuestos mazda 2 chile",
+  "repuestos hyundai accent chile",
+  "repuestos chevrolet sail chile",
+  "repuestos suzuki alto chile",
+  "repuestos nissan np300 chile",
+  "repuestos kia rio chile",
+  "repuestos subaru impreza chile",
+  "repuestos ford ranger chile",
+  "repuestos volkswagen gol chile",
+  // Por zona
+  "repuestos temuco",
   "desarmaduria temuco",
-  "repuestos usados temuco",
+  "repuestos usados araucania",
+  "piezas auto temuco vendo",
+  "repuestos sur chile",
+  // Por pieza específica + zona
+  "alternador temuco vendo",
+  "motor arranque temuco",
+  "radiador auto temuco",
+  "suspension temuco vendo",
+  "caja cambios temuco",
 ];
 
 // Delay humano aleatorio
