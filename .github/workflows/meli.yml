@@ -1,26 +1,30 @@
-name: MeLi Scraper
+name: MeLi Publisher
 
 on:
   schedule:
-    - cron: '0 6,10,14,22 * * *'   # 4x/día UTC → 2am, 6am, 10am, 6pm hora Chile
-  workflow_dispatch:                  # permite ejecutar manualmente desde GitHub
+    - cron: '0 12 * * *'  # 1x/día UTC → 9am hora Chile
+  workflow_dispatch:        # ejecutar manualmente desde GitHub Actions
 
 jobs:
-  scrape:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: Instalar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Instalar dependencias
         run: npm install
 
-      - name: Instalar Chromium (Playwright)
-        run: npx playwright install chromium --with-deps
-
-      - name: Correr agente MercadoLibre
+      - name: Publicar productos pendientes en MercadoLibre
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ML_APP_ID: ${{ secrets.ML_APP_ID }}
+          ML_SECRET_KEY: ${{ secrets.ML_SECRET_KEY }}
         run: node agentes/meli.js
