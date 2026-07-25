@@ -112,10 +112,14 @@ async function publicarConFallback(payload, token) {
     });
     const data = await res.json();
     if (res.ok) return { mlData: data, tipoUsado: tipo };
-    if (data.error !== "not_eligible_for_listing_type") {
-      throw new Error(`MeLi error (${tipo}): ${data.message ?? data.error}`);
+    const causes = Array.isArray(data.cause)
+      ? data.cause.map((c) => c.message ?? "").filter(Boolean)
+      : [];
+    const needsPictures = causes.some((m) => m.toLowerCase().includes("picture"));
+    if (data.error !== "not_eligible_for_listing_type" && !needsPictures) {
+      throw new Error(causes.join(" | ") || data.message || `MeLi error (${tipo}): ${data.error}`);
     }
-    console.log(`      ↳ No elegible para "${tipo}", degradando...`);
+    console.log(`      ↳ No elegible para "${tipo}" (${needsPictures ? "sin foto" : "inelegible"}), degradando...`);
   }
   throw new Error("Sin tipo de publicación disponible para esta cuenta");
 }
@@ -178,10 +182,9 @@ async function publicarProducto(product, token) {
   for (const m of marcasCompat)  attributes.push({ id: "COMPATIBLE_BRANDS", value_name: m });
   for (const m of modelosCompat) attributes.push({ id: "COMPATIBLE_MODELS", value_name: m });
 
-  // Envío
-  const localPickup = (product.envio ?? "").toLowerCase().includes("retiro");
+  // Envío — not_specified es seguro para cuentas sin ME1/ME2 activados
   const shipping = {
-    mode: localPickup ? "not_specified" : "me2",
+    mode:          "not_specified",
     local_pick_up: true,
     free_shipping: false,
   };
