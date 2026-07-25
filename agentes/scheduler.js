@@ -36,8 +36,9 @@ async function cicloCompleto() {
   }
   corriendo = true
   try {
-    await correrAgente('meli-scraper.js')  // llena vitrina con repuestos de MeLi
-    await correrAgente('facebook.js')      // llena vitrina con repuestos de Facebook
+    await correrAgente('meli-scraper.js')    // llena vitrina con repuestos de MeLi
+    await correrAgente('facebook.js')        // llena vitrina con repuestos de Facebook
+    await correrAgente('facebook-publish.js') // publica piezas propias en FB Marketplace
   } finally {
     corriendo = false
   }
